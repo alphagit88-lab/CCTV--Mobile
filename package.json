@@ -10,12 +10,14 @@
     "test": "jest"
   },
   "dependencies": {
+    "@react-native-community/slider": "^5.2.0",
     "react": "18.2.0",
     "react-native": "0.73.6",
     "react-native-keychain": "^10.0.0",
     "react-native-linear-gradient": "^2.8.3",
     "react-native-svg": "^14.1.0",
     "react-native-vector-icons": "^10.3.0",
+    "react-native-vlc-rtsp": "^1.0.8",
     "react-native-webview": "^13.16.1"
   },
   "devDependencies": {

@@ -20,18 +20,22 @@ const PROJECTS = [
     title: 'The Zenith Plaza',
     location: 'London, Canary Wharf',
     cameras: 18,
-    image: require('../assets/images/project1.png'),
+    image: require('../assets/images/project1.jpg'),
   },
   {
     id: '2',
     title: 'Riverside Wharf',
     location: 'Sydney, Darling Harbour',
     cameras: 32,
-    image: require('../assets/images/project2.png'),
+    image: require('../assets/images/project2.jpg'),
   },
 ];
 
-const DashboardScreen = () => {
+interface DashboardScreenProps {
+  onOpenProject: () => void;
+}
+
+const DashboardScreen: React.FC<DashboardScreenProps> = ({ onOpenProject }) => {
   const [activeTab, setActiveTab] = useState<DashboardTab>('dashboard');
 
   return (
@@ -46,7 +50,10 @@ const DashboardScreen = () => {
             <Icon name="bell-outline" size={24} color="#ffffff" />
           </TouchableOpacity>
           <TouchableOpacity style={dashStyles.avatarBtn}>
-            <Text style={dashStyles.avatarText}>F</Text>
+            <Image 
+              source={{ uri: 'https://i.pravatar.cc/100?img=11' }} 
+              style={dashStyles.avatarImage} 
+            />
           </TouchableOpacity>
         </View>
       </View>
@@ -93,7 +100,12 @@ const DashboardScreen = () => {
 
         {/* Project Cards */}
         {PROJECTS.map(project => (
-          <TouchableOpacity key={project.id} style={dashStyles.projectCard} activeOpacity={0.9}>
+          <TouchableOpacity 
+            key={project.id} 
+            style={dashStyles.projectCard} 
+            activeOpacity={0.9}
+            onPress={onOpenProject}
+          >
             <View style={dashStyles.projectThumbBg}>
               <Image source={project.image} style={dashStyles.projectImage} />
               <View style={dashStyles.liveBadge}>
@@ -134,7 +146,13 @@ const DashboardScreen = () => {
           <TouchableOpacity
             key={tab.key}
             style={dashStyles.navTab}
-            onPress={() => setActiveTab(tab.key)}>
+            onPress={() => {
+              if (tab.key === 'projects') {
+                onOpenProject();
+              } else {
+                setActiveTab(tab.key);
+              }
+            }}>
             <Icon 
               name={tab.icon} 
               size={24} 
@@ -157,13 +175,13 @@ const dashStyles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingHorizontal: 20,
-    paddingVertical: 18,
+    paddingHorizontal: 16,
+    paddingVertical: 16,
     backgroundColor: '#0c1a14',
     borderBottomLeftRadius: 15,
     borderBottomRightRadius: 15,
   },
-  headerBrand: { fontSize: 17, fontWeight: '700', color: '#a78bfa', letterSpacing: 0.3 },
+  headerBrand: { fontSize: 18, fontWeight: '700', color: '#a78bfa', letterSpacing: 0.3 },
   headerRight: { flexDirection: 'row', alignItems: 'center', gap: 12 },
   headerIcon: { padding: 4 },
   avatarBtn: {
@@ -175,13 +193,14 @@ const dashStyles = StyleSheet.create({
     alignItems: 'center',
     borderWidth: 1.5,
     borderColor: '#1e3828',
+    overflow: 'hidden',
   },
-  avatarText: { color: '#fff', fontWeight: '700', fontSize: 15 },
+  avatarImage: { width: '100%', height: '100%' },
   scroll: { flex: 1 },
-  scrollContent: { paddingHorizontal: 20, paddingBottom: 20 },
+  scrollContent: { paddingHorizontal: 20, paddingBottom: 100 },
   welcomeBlock: { marginTop: 8, marginBottom: 20 },
-  welcomeText: { fontSize: 26, fontWeight: '800', color: '#a78bfa', lineHeight: 34 },
-  welcomeSub: { fontSize: 13, color: '#ffffff', marginTop: 6 },
+  welcomeText: { fontSize: 26, fontWeight: '800', color: '#d0b0ff', lineHeight: 34 },
+  welcomeSub: { fontSize: 13, color: '#a0aab0', marginTop: 6 },
   statusCard: {
     backgroundColor: '#0c1a14',
     borderRadius: 16,
@@ -256,9 +275,9 @@ const dashStyles = StyleSheet.create({
   },
   separator: {
     height: 1,
-    backgroundColor: '#1a2035',
+    backgroundColor: '#3a5a48',
     marginBottom: 16,
-    opacity: 0.5,
+    opacity: 0.8,
   },
   cameraRow: {
     flexDirection: 'row',
@@ -287,7 +306,7 @@ const dashStyles = StyleSheet.create({
   // Bottom Nav
   bottomNav: {
     flexDirection: 'row',
-    backgroundColor: '#0c1a14',
+    backgroundColor: '#151b22',
     borderTopWidth: 1,
     borderTopColor: '#1e3828',
     paddingVertical: 10,
@@ -295,7 +314,7 @@ const dashStyles = StyleSheet.create({
   },
   navTab: { flex: 1, alignItems: 'center', gap: 3 },
   navLabel: { fontSize: 11, color: '#7a8a9a', fontWeight: '500' },
-  navLabelActive: { color: '#a78bfa', fontWeight: '700' },
+  navLabelActive: { color: '#d0b0ff', fontWeight: '700' },
 });
 
 export default DashboardScreen;

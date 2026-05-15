@@ -10,6 +10,7 @@ import {
   Platform,
   ScrollView,
   SafeAreaView,
+  Alert,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import LinearGradient from 'react-native-linear-gradient';
@@ -19,12 +20,47 @@ interface LoginScreenProps {
   onSubmit: () => void;
 }
 
+import { API_ENDPOINTS } from '../config/api';
+
 const LoginScreen: React.FC<LoginScreenProps> = ({ onSubmit }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [emailFocused, setEmailFocused] = useState(false);
   const [passFocused, setPassFocused] = useState(false);
+  const [loading, setLoading] = useState(false);
+
+  const handleLogin = async () => {
+    if (!email || !password) {
+      Alert.alert('Error', 'Please enter email and password');
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const response = await fetch(API_ENDPOINTS.LOGIN, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email, password }),
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        // You could save the token to AsyncStorage here
+        onSubmit();
+      } else {
+        Alert.alert('Login Failed', data.message || 'Invalid credentials');
+      }
+    } catch (error) {
+      console.error(error);
+      Alert.alert('Error', 'Failed to connect to the server');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <View style={{ flex: 1, backgroundColor: '#09140f', overflow: 'hidden' }}>
@@ -113,8 +149,9 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onSubmit }) => {
 
               {/* Authenticate Button */}
               <TouchableOpacity
-                style={[loginStyles.authBtn, { overflow: 'hidden' }]}
-                onPress={onSubmit}
+                style={[loginStyles.authBtn, { overflow: 'hidden', opacity: loading ? 0.7 : 1 }]}
+                onPress={handleLogin}
+                disabled={loading}
                 activeOpacity={0.82}>
                 {/* Gradient Background */}
                 <LinearGradient
@@ -123,8 +160,10 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onSubmit }) => {
                   end={{ x: 1, y: 0 }}
                   style={StyleSheet.absoluteFill}
                 />
-                <Text style={loginStyles.authBtnText}>AUTHENTICATE</Text>
-                <Icon name="login" size={18} color="#e0f5ec" style={{ marginLeft: 8 }} />
+                <Text style={loginStyles.authBtnText}>
+                  {loading ? 'AUTHENTICATING...' : 'AUTHENTICATE'}
+                </Text>
+                {!loading && <Icon name="login" size={18} color="#e0f5ec" style={{ marginLeft: 8 }} />}
               </TouchableOpacity>
 
               {/* Divider + Security label */}
