@@ -1,10 +1,15 @@
-# Add project specific ProGuard rules here.
-# By default, the flags in this file are appended to flags specified
-# in /usr/local/Cellar/android-sdk/24.3.3/tools/proguard/proguard-android.txt
-# You can edit the include path and order by changing the proguardFiles
-# directive in build.gradle.
-#
-# For more details, see
-#   http://developer.android.com/guide/developing/tools/proguard.html
+# Keep VLC classes from being stripped or renamed
+-keep class org.videolan.** { *; }
+-dontwarn org.videolan.**
 
-# Add any project specific keep options here:
+# Keep React Native bridge methods and native methods
+-keepclassmembers class * {
+    @com.facebook.react.bridge.ReactMethod *;
+    @com.facebook.react.uimanager.annotations.ReactProp *;
+    @com.facebook.react.uimanager.annotations.ReactPropGroup *;
+    native <methods>;
+}
+
+# Keep the VLC wrapper classes
+-keep class com.yuanzhou.vlc.** { *; }
+-dontwarn com.yuanzhou.vlc.**
